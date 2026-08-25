@@ -35,8 +35,8 @@ def alarma_logica_loop(temperaturas, humedades, temp_umbral, hum_umbral):
     return np.array(resultados)
 
 
-def alarma_logica_vectorizada(temperaturas, humedades, temp_umbral, hum_umbral):
-    return (temperaturas > temp_umbral) & (humedades < hum_umbral)
+def alarma_logica_vectorizada(temperaturas, humedades, temp_umbral, hum_umbral, weekend):
+    return (temperaturas > temp_umbral) & (humedades < hum_umbral) or !(weekend)
 
 
 # ---------------------------------------------------------------------------
@@ -56,11 +56,12 @@ with tab1:
         n = st.slider("Número de lecturas (n)", 50, 5000, 500, step=50)
         temp_umbral = st.slider("Umbral temperatura (°C) — mayor que", 15, 40, 30)
         hum_umbral = st.slider("Umbral humedad (%) — menor que", 20, 80, 40)
+        weekend = st.checkbox("Es fin de semana")
 
     temps, hums = generar_datos(n)
 
     with col_cfg:
-        alarmas = alarma_logica_vectorizada(temps, hums, temp_umbral, hum_umbral)
+        alarmas = alarma_logica_vectorizada(temps, hums, temp_umbral, hum_umbral, weekend)
         st.metric("Alarmas detectadas", f"{alarmas.sum()} / {n}")
 
     with col_data:
