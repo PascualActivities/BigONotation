@@ -28,15 +28,15 @@ def generar_datos(n, seed=42):
     return temperaturas, humedades
 
 
-def alarma_logica_loop(temperaturas, humedades, temp_umbral, hum_umbral):
+def alarma_logica_loop(temperaturas, humedades, temp_umbral, hum_umbral, weekend):
     resultados = []
     for temp, hum in zip(temperaturas, humedades):
-        resultados.append(temp > temp_umbral and hum < hum_umbral)
+        resultados.append(temp > temp_umbral and hum < hum_umbral and not weekend)
     return np.array(resultados)
 
 
 def alarma_logica_vectorizada(temperaturas, humedades, temp_umbral, hum_umbral, weekend):
-    return (temperaturas > temp_umbral) & (humedades < hum_umbral) or !(weekend)
+    return (temperaturas > temp_umbral) & (humedades < hum_umbral) & (not weekend)
 
 
 # ---------------------------------------------------------------------------
@@ -150,12 +150,12 @@ with tab3:
 
         inicio = time.perf_counter()
         for _ in range(repeticiones_loop):
-            alarma_logica_loop(temps_b, hums_b, temp_umbral_b, hum_umbral_b)
+            alarma_logica_loop(temps_b, hums_b, temp_umbral_b, hum_umbral_b, weekend)
         t_loop = (time.perf_counter() - inicio) / repeticiones_loop
 
         inicio = time.perf_counter()
         for _ in range(repeticiones_vec):
-            alarma_logica_vectorizada(temps_b, hums_b, temp_umbral_b, hum_umbral_b)
+            alarma_logica_vectorizada(temps_b, hums_b, temp_umbral_b, hum_umbral_b, weekend)
         t_vec = (time.perf_counter() - inicio) / repeticiones_vec
 
         col1, col2, col3 = st.columns(3)
